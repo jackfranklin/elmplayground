@@ -65,15 +65,6 @@ gulp.task('start', ['build'], function() {
   watchElmAndRun('build');
 });
 
-gulp.task('test', $.shell.task(['elm-test'], {
-  ignoreErrors: true
-}));
-
-gulp.task('watch-test', ['test'], function() {
-  watchElmAndRun('test');
-});
-
-
 gulp.task('serve', function() {
   liveServer.start({
     open: false,

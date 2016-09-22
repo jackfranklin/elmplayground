@@ -4,7 +4,6 @@
   "description": "",
   "private": true,
   "scripts": {
-    "test": "gulp test"
   },
   "keywords": [],
   "author": "",
@@ -12,7 +11,6 @@
   "dependencies": {},
   "devDependencies": {
     "del": "2.2.2",
-    "elm-test": "0.17.3",
     "gulp": "3.9.1",
     "gulp-bump": "2.4.0",
     "gulp-elm": "^0.4.0",
