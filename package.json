@@ -21,6 +21,7 @@
     "gulp-shell": "0.5.2",
     "gulp-surge": "0.1.0",
     "gulp-tag-version": "1.3.0",
+    "gulp-uglify": "2.0.0",
     "gulp-util": "3.0.7",
     "gulp-watch": "4.3.6",
     "live-server": "github:jackfranklin/live-server#ignore-assets-with-spa-option"

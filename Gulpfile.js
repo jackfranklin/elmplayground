@@ -51,6 +51,9 @@ makeProdBumpTask('patch');
 makeProdBumpTask('minor');
 makeProdBumpTask('major');
 
+gulp.task('prod:no-bump', ['prod:vendor', 'prod:html', 'prod:elm' ], function() {
+});
+
 gulp.task('build-prod', function() {
   $.util.log('You need to use `gulp prod:` with `patch`, `minor` or `major`');
 });
