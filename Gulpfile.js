@@ -8,7 +8,7 @@ function watchElmAndRun(...args) {
 }
 
 gulp.task('build', function() {
-  return gulp.src('App.elm')
+  return gulp.src('src/App.elm')
     .pipe($.plumber({
       errorHandler: $.notify.onError({ sound: false, message: 'Elm error' })
     }))
@@ -17,7 +17,7 @@ gulp.task('build', function() {
 });
 
 gulp.task('prod:elm', ['prod:clean'], function() {
-  return gulp.src('App.elm')
+  return gulp.src('src/App.elm')
     .pipe($.elm.bundle('App.js'))
     .pipe($.uglify())
     .pipe(gulp.dest('dist/build'));
@@ -57,7 +57,7 @@ gulp.task('deploy', function() {
   $.util.log('Deploying version: ', require('./package.json').version);
   return $.surge({
     project: './dist',
-    domain: throw new Error("Define the domain for deploying to!")
+    domain: 'elmplayground.com'
   });
 });
 
