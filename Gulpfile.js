@@ -32,7 +32,9 @@ gulp.task('prod:vendor', ['prod:clean'], function() {
 });
 
 gulp.task('prod:html', ['prod:clean'], function() {
-  return gulp.src('index.html').pipe(gulp.dest('dist'));
+  return gulp.src('index.html')
+    .pipe($.rename('200.html'))
+    .pipe(gulp.dest('dist'));
 });
 
 function makeProdBumpTask(level) {
@@ -68,6 +70,7 @@ gulp.task('start', ['build'], function() {
 gulp.task('serve', function() {
   liveServer.start({
     open: false,
-    ignore: /elm-stuff/
+    ignore: /elm-stuff/,
+    file: 'index.html'
   });
 });

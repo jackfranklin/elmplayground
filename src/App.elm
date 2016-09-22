@@ -33,27 +33,22 @@ view model =
 
 toUrl : Model -> String
 toUrl model =
-    "#/" ++ model.currentPage.slug
+    model.currentPage.slug
 
 
 fromUrl : String -> String
 fromUrl url =
-    String.dropLeft 2 url
+    url
 
 
 urlParser : Navigation.Parser String
 urlParser =
-    Navigation.makeParser (fromUrl << .hash)
+    Navigation.makeParser (fromUrl << .pathname)
 
 
 urlUpdate : String -> Model -> ( Model, Cmd Msg )
 urlUpdate result model =
-    case result of
-        "" ->
-            ( model, Navigation.modifyUrl (toUrl model) )
-
-        _ ->
-            ( model, Cmd.none )
+    ( model, Cmd.none )
 
 
 main : Program Never
