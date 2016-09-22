@@ -1,22 +1,24 @@
 module MyApp exposing (..)
 
 import Html exposing (Html, text)
-import Html.App as App
+import Navigation
 import Types exposing (Model, Msg(..))
 import View
 import Pages
+import String
 
 
 initialModel : Model
 initialModel =
-    { page = Pages.index
+    { currentPage = Pages.index
+    , pages = Pages.pages
     , posts = []
     }
 
 
-init : ( Model, Cmd Msg )
-init =
-    ( initialModel, Cmd.none )
+init : String -> ( Model, Cmd Msg )
+init url =
+    urlUpdate url initialModel
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -29,11 +31,37 @@ view model =
     View.render model
 
 
+toUrl : Model -> String
+toUrl model =
+    "#/" ++ model.currentPage.slug
+
+
+fromUrl : String -> String
+fromUrl url =
+    String.dropLeft 2 url
+
+
+urlParser : Navigation.Parser String
+urlParser =
+    Navigation.makeParser (fromUrl << .hash)
+
+
+urlUpdate : String -> Model -> ( Model, Cmd Msg )
+urlUpdate result model =
+    case result of
+        "" ->
+            ( model, Navigation.modifyUrl (toUrl model) )
+
+        _ ->
+            ( model, Cmd.none )
+
+
 main : Program Never
 main =
-    App.program
+    Navigation.program urlParser
         { init = init
         , view = view
         , update = update
+        , urlUpdate = urlUpdate
         , subscriptions = always Sub.none
         }

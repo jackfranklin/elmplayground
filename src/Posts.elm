@@ -1,4 +1,4 @@
-module PostList exposing (posts)
+module Posts exposing (posts)
 
 
 posts : List String

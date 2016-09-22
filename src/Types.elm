@@ -4,8 +4,9 @@ import Date exposing (Date)
 
 
 type alias Model =
-    { page : Page
+    { currentPage : Page
     , posts : List Post
+    , pages : List Page
     }
 
 
@@ -26,7 +27,7 @@ type alias Post =
 type alias Page =
     { slug : String
     , category : PageCategory
-    , title : String
+    , name : String
     }
 
 

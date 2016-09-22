@@ -7,7 +7,7 @@ index : Page
 index =
     { slug = "/"
     , category = Static
-    , title = "Welcome to Elm Playground"
+    , name = "index"
     }
 
 
