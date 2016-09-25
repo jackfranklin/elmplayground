@@ -5,14 +5,13 @@ import Navigation
 import Types exposing (Model, Msg(..))
 import View
 import Pages
-import String
+import Posts
 
 
 initialModel : Model
 initialModel =
-    { currentPage = Pages.index
-    , pages = Pages.pages
-    , posts = []
+    { currentContent = Pages.index
+    , contentPieces = Pages.pages ++ Posts.posts
     }
 
 
@@ -33,7 +32,7 @@ view model =
 
 toUrl : Model -> String
 toUrl model =
-    model.currentPage.slug
+    model.currentContent.slug
 
 
 fromUrl : String -> String

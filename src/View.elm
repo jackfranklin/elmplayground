@@ -2,7 +2,13 @@ module View exposing (render)
 
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import Types exposing (Model, Msg)
+import Navigation exposing (newUrl)
+import Types exposing (Model, Msg, Content)
+
+
+link : String -> Content -> Html Msg
+link str content =
+    a [] []
 
 
 render : Model -> Html Msg

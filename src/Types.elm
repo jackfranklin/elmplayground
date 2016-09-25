@@ -1,33 +1,34 @@
 module Types exposing (..)
 
 import Date exposing (Date)
+import RemoteData exposing (WebData)
 
 
 type alias Model =
-    { currentPage : Page
-    , posts : List Post
-    , pages : List Page
+    { contentPieces : List Content
+    , currentContent : Content
     }
 
 
-type PageCategory
-    = Static
-    | BlogPost
+type alias Author =
+    { name : String
+    , avatar : String
+    }
 
 
-type alias Post =
+type ContentType
+    = Page
+    | Post
+
+
+type alias Content =
     { title : String
+    , name : String
     , slug : String
     , publishedDate : Date
-    , author : String
-    , markdown : String
-    }
-
-
-type alias Page =
-    { slug : String
-    , category : PageCategory
-    , name : String
+    , author : Author
+    , markdown : WebData String
+    , contentType : ContentType
     }
 
 
