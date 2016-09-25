@@ -5,7 +5,7 @@ import RemoteData exposing (WebData)
 
 
 type alias Model =
-    { contentPieces : List Content
+    { allContent : List Content
     , currentContent : Content
     }
 
@@ -34,3 +34,5 @@ type alias Content =
 
 type Msg
     = NoOp
+    | UrlChange String
+    | FetchedContent (WebData String)

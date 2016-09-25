@@ -2,7 +2,11 @@ module View exposing (render)
 
 import Html exposing (..)
 import Html.Attributes exposing (class)
-import Navigation exposing (newUrl)
+import RemoteData exposing (WebData, RemoteData(..))
+
+
+-- import Navigation exposing (newUrl)
+
 import Types exposing (Model, Msg, Content)
 
 
@@ -38,7 +42,27 @@ navigation model =
 
 body : Model -> Html Msg
 body model =
-    section [] [ text "body goes here" ]
+    section []
+        [ text model.currentContent.title
+        , renderMarkdown model.currentContent.markdown
+        ]
+
+
+renderMarkdown : WebData String -> Html Msg
+renderMarkdown markdown =
+    case markdown of
+        Success data ->
+            text data
+
+        Failure e ->
+            let
+                _ =
+                    Debug.log "error" e
+            in
+                text "There was an error"
+
+        _ ->
+            text "Loading"
 
 
 footer : Model -> Html Msg

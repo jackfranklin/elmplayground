@@ -6,12 +6,15 @@ import Types exposing (Model, Msg(..))
 import View
 import Pages
 import Posts
+import ContentUtils
+import FetchContent
+import RemoteData exposing (RemoteData)
 
 
 initialModel : Model
 initialModel =
     { currentContent = Pages.index
-    , contentPieces = Pages.pages ++ Posts.posts
+    , allContent = Pages.pages ++ Posts.posts
     }
 
 
@@ -22,7 +25,39 @@ init url =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model, Cmd.none )
+    case msg of
+        NoOp ->
+            ( model, Cmd.none )
+
+        FetchedContent response ->
+            let
+                content' =
+                    model.currentContent
+
+                newCurrent =
+                    { content' | markdown = response }
+            in
+                ( { model | currentContent = newCurrent }, Cmd.none )
+
+        UrlChange newUrl ->
+            let
+                _ =
+                    Debug.log "urlChange" newUrl
+
+                piece =
+                    ContentUtils.findBySlug model.allContent newUrl
+            in
+                case piece of
+                    Nothing ->
+                        -- TODO: here we should go to the 404 page
+                        update NoOp model
+
+                    Just item ->
+                        let
+                            newItem =
+                                { item | markdown = RemoteData.Loading }
+                        in
+                            ( { model | currentContent = newItem }, FetchContent.fetch newItem )
 
 
 view : Model -> Html Msg
@@ -47,7 +82,7 @@ urlParser =
 
 urlUpdate : String -> Model -> ( Model, Cmd Msg )
 urlUpdate result model =
-    ( model, Cmd.none )
+    update (UrlChange result) model
 
 
 main : Program Never
