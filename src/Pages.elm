@@ -19,6 +19,18 @@ index =
     }
 
 
+about : Content
+about =
+    { slug = "/about"
+    , contentType = Page
+    , name = "about"
+    , title = "About the Elm Playground"
+    , publishedDate = fromCalendarDate 2016 Sep 1
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    }
+
+
 pages : List Content
 pages =
-    [ index ]
+    [ index, about ]
