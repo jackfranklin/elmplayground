@@ -3,6 +3,7 @@ module View exposing (render)
 import Html exposing (..)
 import Html.Attributes exposing (class)
 import RemoteData exposing (WebData, RemoteData(..))
+import Markdown
 
 
 -- import Navigation exposing (newUrl)
@@ -52,14 +53,10 @@ renderMarkdown : WebData String -> Html Msg
 renderMarkdown markdown =
     case markdown of
         Success data ->
-            text data
+            Markdown.toHtml [ class "markdown-content" ] data
 
         Failure e ->
-            let
-                _ =
-                    Debug.log "error" e
-            in
-                text "There was an error"
+            text "There was an error"
 
         _ ->
             text "Loading"

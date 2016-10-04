@@ -49,8 +49,7 @@ update msg model =
             in
                 case piece of
                     Nothing ->
-                        -- TODO: here we should go to the 404 page
-                        update NoOp model
+                        ( model, Navigation.modifyUrl "/404" )
 
                     Just item ->
                         let

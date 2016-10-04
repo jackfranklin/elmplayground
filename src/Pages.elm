@@ -31,6 +31,18 @@ about =
     }
 
 
+notFound404 : Content
+notFound404 =
+    { slug = "/404"
+    , contentType = Page
+    , name = "404"
+    , title = "You're lost!"
+    , publishedDate = fromCalendarDate 2016 Sep 1
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    }
+
+
 pages : List Content
 pages =
-    [ index, about ]
+    [ index, about, notFound404 ]
