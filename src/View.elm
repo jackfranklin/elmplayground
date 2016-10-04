@@ -4,11 +4,20 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 import RemoteData exposing (WebData, RemoteData(..))
 import Markdown
+import Dict exposing (Dict)
+import Views.Index
 
 
 -- import Navigation exposing (newUrl)
 
 import Types exposing (Model, Msg, Content)
+
+
+specialViews : Dict String (Content -> Html Msg)
+specialViews =
+    Dict.fromList
+        [ ( "index", Views.Index.render )
+        ]
 
 
 link : String -> Content -> Html Msg
@@ -41,12 +50,23 @@ navigation model =
         ]
 
 
+renderContent : Content -> Html Msg
+renderContent content =
+    case Dict.get content.name specialViews of
+        Just view ->
+            view <| content
+
+        Nothing ->
+            div []
+                [ text content.title
+                , renderMarkdown content.markdown
+                ]
+
+
 body : Model -> Html Msg
 body model =
     section []
-        [ text model.currentContent.title
-        , renderMarkdown model.currentContent.markdown
-        ]
+        [ renderContent model.currentContent ]
 
 
 renderMarkdown : WebData String -> Html Msg
