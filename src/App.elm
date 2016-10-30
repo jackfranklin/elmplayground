@@ -9,6 +9,7 @@ import Posts
 import ContentUtils
 import FetchContent
 import RemoteData exposing (RemoteData)
+import Title
 
 
 initialModel : Model
@@ -59,7 +60,12 @@ update msg model =
                             newItem =
                                 { item | markdown = RemoteData.Loading }
                         in
-                            ( { model | currentContent = newItem }, FetchContent.fetch newItem )
+                            ( { model | currentContent = newItem }
+                            , Cmd.batch
+                                [ FetchContent.fetch newItem
+                                , Title.setTitle newItem
+                                ]
+                            )
 
 
 view : Model -> Html Msg

@@ -45,11 +45,16 @@ gulp.task('prod:img', ['prod:clean'], function() {
   return gulp.src('img/*').pipe(gulp.dest('dist/img'))
 })
 
+gulp.task('prod:js', ['prod:clean'], function() {
+  return gulp.src('js/*').pipe(gulp.dest('dist/js'))
+})
+
 gulp.task('prod:content', function() {
   return gulp.src('content/**/*', { base: 'content' }).pipe(gulp.dest('dist/content'))
 })
 gulp.task('deploy', [
-  'prod:vendor', 'prod:html', 'prod:css', 'prod:img', 'prod:content', 'prod:elm'
+  'prod:vendor', 'prod:html', 'prod:css',
+  'prod:js', 'prod:img', 'prod:content', 'prod:elm'
 ], function() {
   $.util.log('Deploying version: ', require('./package.json').version);
   return $.surge({
