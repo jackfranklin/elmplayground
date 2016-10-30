@@ -1,29 +1,14 @@
 module View exposing (render)
 
 import Html exposing (..)
-import Html.Attributes exposing (class, href)
-import Html.Events exposing (onClick)
+import Html.Attributes exposing (class, href, src)
 import RemoteData exposing (WebData, RemoteData(..))
 import Markdown
 import Pages
 import Types exposing (Msg(..))
-import Json.Decode
->>>>>>> Get navigation working
-
-
--- import Navigation exposing (newUrl)
-
+import ViewSpecialCases
 import Types exposing (Model, Msg, Content)
-
-
-linkContent : String -> Content -> Html Msg
-linkContent str { slug } =
-    linkUrl str slug
-
-
-linkUrl : String -> String -> Html Msg
-linkUrl str url =
-    a [ href url, navigationOnClick (LinkClicked url) ] [ text str ]
+import ViewHelpers exposing (linkContent)
 
 
 render : Model -> Html Msg
@@ -39,7 +24,8 @@ render model =
 header : Model -> Html Msg
 header model =
     Html.header [ class "header" ]
-        [ h1 [] [ text "The Elm Playground" ]
+        [ img [ src "/img/elm.png" ] []
+        , h1 [] [ text "The Elm Playground" ]
         ]
 
 
@@ -51,67 +37,55 @@ navigation model =
         ]
 
 
-renderContent : Content -> Html Msg
-renderContent content =
-    case Dict.get content.name specialViews of
-        Just view ->
-            view <| content
-
-        Nothing ->
-            div []
-                [ text content.title
-                , renderMarkdown content.markdown
-                ]
-
-
 body : Model -> Html Msg
 body model =
-<<<<<<< HEAD
-    section []
-        [ renderContent model.currentContent ]
-=======
     section [ class "body" ]
+        [ mainBody model, subContent ]
+
+
+subContent : Html Msg
+subContent =
+    div [ class "subContent" ]
+        [ p [] [ text "" ] ]
+
+
+mainBody : Model -> Html Msg
+mainBody model =
+    div [ class "mainBody" ]
         [ h1 [] [ text model.currentContent.title ]
-        , renderMarkdown model.currentContent.markdown
+        , renderContent model
         ]
->>>>>>> Get navigation working
 
 
-convertMarkdownToHtml : WebData String -> List (Html Msg)
+convertMarkdownToHtml : WebData String -> Html Msg
 convertMarkdownToHtml markdown =
     case markdown of
         Success data ->
-<<<<<<< HEAD
             Markdown.toHtml [ class "markdown-content" ] data
 
         Failure e ->
             text "There was an error"
-=======
-            [ Markdown.toHtml [] data ]
-
-        Failure e ->
-            [ text "There was an error" ]
->>>>>>> Get navigation working
 
         _ ->
-            [ text "Loading" ]
+            text "Loading"
+
+
+renderContent : Model -> Html Msg
+renderContent model =
+    case ViewSpecialCases.getSpecialCase model.currentContent.name of
+        Just fn ->
+            article [ class "fn-content" ] [ (fn model) ]
+
+        Nothing ->
+            renderMarkdown model.currentContent.markdown
 
 
 renderMarkdown : WebData String -> Html Msg
 renderMarkdown markdown =
-    article [ class "markdown-content" ] (convertMarkdownToHtml markdown)
+    article [ class "markdown-content" ] [ convertMarkdownToHtml markdown ]
 
 
 footer : Model -> Html Msg
 footer model =
     Html.footer [ class "footer" ]
         [ text "Copyright Elm Playground" ]
-
-
-navigationOnClick : Msg -> Attribute Msg
-navigationOnClick msg =
-    Html.Events.onWithOptions "click"
-        { stopPropagation = False
-        , preventDefault = True
-        }
-        (Json.Decode.succeed msg)

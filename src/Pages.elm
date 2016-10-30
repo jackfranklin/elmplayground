@@ -16,6 +16,7 @@ index =
     , publishedDate = fromCalendarDate 2016 Sep 1
     , author = Authors.jack
     , markdown = RemoteData.NotAsked
+    , intro = ""
     }
 
 
@@ -28,6 +29,20 @@ about =
     , publishedDate = fromCalendarDate 2016 Sep 1
     , author = Authors.jack
     , markdown = RemoteData.NotAsked
+    , intro = ""
+    }
+
+
+notFoundContent : Content
+notFoundContent =
+    { title = "Couldn't find content"
+    , contentType = Page
+    , name = "not-found"
+    , slug = "notfound"
+    , publishedDate = fromCalendarDate 2016 Sep 1
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    , intro = ""
     }
 
 
@@ -40,6 +55,7 @@ notFound404 =
     , publishedDate = fromCalendarDate 2016 Sep 1
     , author = Authors.jack
     , markdown = RemoteData.NotAsked
+    , intro = ""
     }
 
 

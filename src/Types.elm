@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Date exposing (Date)
 import RemoteData exposing (WebData)
+import Html exposing (Html)
 
 
 type alias Model =
@@ -29,6 +30,7 @@ type alias Content =
     , author : Author
     , markdown : WebData String
     , contentType : ContentType
+    , intro : String
     }
 
 

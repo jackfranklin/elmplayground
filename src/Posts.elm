@@ -16,6 +16,7 @@ helloWorld =
     , author = Authors.jack
     , markdown = RemoteData.NotAsked
     , contentType = Post
+    , intro = "Introducing the Elm Playground!"
     }
 
 
