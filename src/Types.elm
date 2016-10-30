@@ -36,3 +36,4 @@ type Msg
     = NoOp
     | UrlChange String
     | FetchedContent (WebData String)
+    | LinkClicked String

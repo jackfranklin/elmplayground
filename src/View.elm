@@ -1,11 +1,14 @@
 module View exposing (render)
 
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes exposing (class, href)
+import Html.Events exposing (onClick)
 import RemoteData exposing (WebData, RemoteData(..))
 import Markdown
-import Dict exposing (Dict)
-import Views.Index
+import Pages
+import Types exposing (Msg(..))
+import Json.Decode
+>>>>>>> Get navigation working
 
 
 -- import Navigation exposing (newUrl)
@@ -13,16 +16,14 @@ import Views.Index
 import Types exposing (Model, Msg, Content)
 
 
-specialViews : Dict String (Content -> Html Msg)
-specialViews =
-    Dict.fromList
-        [ ( "index", Views.Index.render )
-        ]
+linkContent : String -> Content -> Html Msg
+linkContent str { slug } =
+    linkUrl str slug
 
 
-link : String -> Content -> Html Msg
-link str content =
-    a [] []
+linkUrl : String -> String -> Html Msg
+linkUrl str url =
+    a [ href url, navigationOnClick (LinkClicked url) ] [ text str ]
 
 
 render : Model -> Html Msg
@@ -45,8 +46,8 @@ header model =
 navigation : Model -> Html Msg
 navigation model =
     nav [ class "navigation" ]
-        [ li [] [ text "Link" ]
-        , li [] [ text "Link 2" ]
+        [ li [] [ linkContent "Home" Pages.index ]
+        , li [] [ linkContent "About" Pages.about ]
         ]
 
 
@@ -65,24 +66,52 @@ renderContent content =
 
 body : Model -> Html Msg
 body model =
+<<<<<<< HEAD
     section []
         [ renderContent model.currentContent ]
+=======
+    section [ class "body" ]
+        [ h1 [] [ text model.currentContent.title ]
+        , renderMarkdown model.currentContent.markdown
+        ]
+>>>>>>> Get navigation working
 
 
-renderMarkdown : WebData String -> Html Msg
-renderMarkdown markdown =
+convertMarkdownToHtml : WebData String -> List (Html Msg)
+convertMarkdownToHtml markdown =
     case markdown of
         Success data ->
+<<<<<<< HEAD
             Markdown.toHtml [ class "markdown-content" ] data
 
         Failure e ->
             text "There was an error"
+=======
+            [ Markdown.toHtml [] data ]
+
+        Failure e ->
+            [ text "There was an error" ]
+>>>>>>> Get navigation working
 
         _ ->
-            text "Loading"
+            [ text "Loading" ]
+
+
+renderMarkdown : WebData String -> Html Msg
+renderMarkdown markdown =
+    article [ class "markdown-content" ] (convertMarkdownToHtml markdown)
 
 
 footer : Model -> Html Msg
 footer model =
     Html.footer [ class "footer" ]
         [ text "Copyright Elm Playground" ]
+
+
+navigationOnClick : Msg -> Attribute Msg
+navigationOnClick msg =
+    Html.Events.onWithOptions "click"
+        { stopPropagation = False
+        , preventDefault = True
+        }
+        (Json.Decode.succeed msg)

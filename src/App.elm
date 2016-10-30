@@ -29,6 +29,9 @@ update msg model =
         NoOp ->
             ( model, Cmd.none )
 
+        LinkClicked slug ->
+            ( model, Navigation.newUrl slug )
+
         FetchedContent response ->
             let
                 content' =
