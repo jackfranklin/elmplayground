@@ -24,7 +24,7 @@ gulp.task('prod:elm', ['prod:clean'], function() {
 });
 
 gulp.task('prod:clean', function() {
-  return del(['dist']);
+  return del(['dist/**/*']);
 });
 
 gulp.task('prod:vendor', ['prod:clean'], function() {
@@ -37,28 +37,20 @@ gulp.task('prod:html', ['prod:clean'], function() {
     .pipe(gulp.dest('dist'));
 });
 
-function makeProdBumpTask(level) {
-  gulp.task('prod:' + level, ['prod:vendor', 'prod:html', 'prod:elm'], function() {
-    return gulp.src(['./package.json', './elm-package.json'])
-      .pipe($.bump({ type: level }))
-      .pipe(gulp.dest('./'))
-      .pipe($.filter('package.json'))
-      .pipe($.tagVersion());
-  });
-}
+gulp.task('prod:css', function() {
+  return gulp.src('style.css').pipe(gulp.dest('dist'))
+})
 
-makeProdBumpTask('patch');
-makeProdBumpTask('minor');
-makeProdBumpTask('major');
+gulp.task('prod:img', ['prod:clean'], function() {
+  return gulp.src('img/*').pipe(gulp.dest('dist/img'))
+})
 
-gulp.task('prod:no-bump', ['prod:vendor', 'prod:html', 'prod:elm' ], function() {
-});
-
-gulp.task('build-prod', function() {
-  $.util.log('You need to use `gulp prod:` with `patch`, `minor` or `major`');
-});
-
-gulp.task('deploy', function() {
+gulp.task('prod:content', function() {
+  return gulp.src('content/**/*', { base: 'content' }).pipe(gulp.dest('dist/content'))
+})
+gulp.task('deploy', [
+  'prod:vendor', 'prod:html', 'prod:css', 'prod:img', 'prod:content', 'prod:elm'
+], function() {
   $.util.log('Deploying version: ', require('./package.json').version);
   return $.surge({
     project: './dist',
