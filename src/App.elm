@@ -5,10 +5,7 @@ import Navigation
 import Types exposing (Model, Msg(..))
 import View
 import Pages
-import ContentUtils
-import FetchContent
-import RemoteData exposing (RemoteData)
-import Title
+import OnUrlChange
 
 
 initialModel : Model
@@ -42,25 +39,7 @@ update msg model =
                 ( { model | currentContent = newCurrent }, Cmd.none )
 
         UrlChange newUrl ->
-            let
-                piece =
-                    ContentUtils.findBySlug ContentUtils.allContent newUrl
-            in
-                case piece of
-                    Nothing ->
-                        ( model, Navigation.modifyUrl "/404" )
-
-                    Just item ->
-                        let
-                            newItem =
-                                { item | markdown = RemoteData.Loading }
-                        in
-                            ( { model | currentContent = newItem }
-                            , Cmd.batch
-                                [ FetchContent.fetch newItem
-                                , Title.setTitle newItem
-                                ]
-                            )
+            OnUrlChange.update newUrl model
 
 
 view : Model -> Html Msg
