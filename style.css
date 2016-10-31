@@ -22,9 +22,11 @@ a:hover {
   float: left;
   margin-left: 20px;
 }
+
 .site-container {
   font-family: Helvetica, Arial, sans-serif;
   width: 80%;
+  max-width: 960px;
   margin: 20px auto;
 }
 
