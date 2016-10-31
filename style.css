@@ -2,7 +2,8 @@ a:link, a:visited {
   color: #5A6378;
 }
 
-a:hover {
+a:hover,
+a:focus {
   color: #60B5CC;
   text-decoration: underline;
 }
@@ -26,7 +27,7 @@ a:hover {
 .site-container {
   font-family: Helvetica, Arial, sans-serif;
   width: 80%;
-  max-width: 960px;
+  max-width: 43em; /* 688px - this makes it around 100 characters */
   margin: 20px auto;
 }
 
@@ -46,7 +47,7 @@ a:hover {
 .navigation li {
   display: inline-block;
   margin-right: 10px;
-  font-size: 17px;
+  font-size: 1.0625em; /* 17px */
 }
 
 .navigation a:link,
@@ -63,15 +64,15 @@ a:hover {
 
 
 .mainBody p {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1em;
+  line-height: 1.625; /* 24px */
 }
 
 pre {
-  font-size: 17px;
+  font-size: 1.0625em; /* 17px */
 }
 
 p > code {
   background: #eee;
-  font-size: 17px;
+  font-size: 1.0625em; /* 17px */
 }
