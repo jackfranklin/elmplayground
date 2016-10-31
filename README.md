@@ -1,10 +1,15 @@
-# elm boilerplate
+# The Elm Playground
 
-My boilerplate for Elm applications.
+A blog about Elm that's written in Elm.
 
-Provides the following:
+## Running locally
 
-- `gulp test` to run tests with Elm-Test
-- `gulp serve` to run the app on a live server locally
-- `gulp build` to compile the Elm app
-- `gulp start` to watch and recompile Elm when files change
+```
+npm install
+elm package install
+(in one tab) gulp start
+(in aother) gulp serve
+open http://localhost:8080
+```
+
+Contributions welcome!
