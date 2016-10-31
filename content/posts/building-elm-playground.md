@@ -58,7 +58,7 @@ If we don't find a piece of content, the user is sent to the 404 page, else we s
 
 For each piece of content, there is a corresponding Markdown file that contains the content. This makes an HTTP request to fetch the data, which is wrapped as a [RemoteData][remotedata] instance. This makes it really easy to handle errors loading files, and to also show when a piece of content is loading.
 
-The content is parsed using [elm-markdown][elm-markdown], which also enables code highlighting via [highlight.js][https://highlightjs.org/]. This is the same setup that's used on the Elm package site, so the syntax highlighting is the same on this site as it is on the package site.
+The content is parsed using [elm-markdown][elm-markdown], which also enables code highlighting via [highlight.js](https://highlightjs.org/). This is the same setup that's used on the Elm package site, so the syntax highlighting is the same on this site as it is on the package site.
 
 ## Plenty More
 
