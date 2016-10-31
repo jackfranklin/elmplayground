@@ -1,6 +1,6 @@
 module ViewSpecialCases exposing (..)
 
-import Types exposing (Model, Msg)
+import Types exposing (Model, Msg, Content)
 import Html exposing (..)
 import Dict exposing (Dict)
 import ViewHelpers
@@ -50,3 +50,8 @@ specialCases =
 getSpecialCase : String -> Maybe ViewFn
 getSpecialCase =
     ((flip Dict.get) specialCases)
+
+
+hasSpecialCase : Content -> Bool
+hasSpecialCase { name } =
+    getSpecialCase name == Nothing
