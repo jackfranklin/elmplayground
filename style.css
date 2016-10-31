@@ -69,10 +69,10 @@ a:focus {
 }
 
 pre {
-  font-size: 1.0625em; /* 17px */
+  font-size: 1.1725em; /* 17px */
 }
 
 p > code {
   background: #eee;
-  font-size: 1.0625em; /* 17px */
+  font-size: 1.1625em; /* 17px */
 }
