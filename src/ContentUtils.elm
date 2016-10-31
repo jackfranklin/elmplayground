@@ -7,6 +7,11 @@ import Date.Extra
 import Posts
 
 
+allContent : List Content
+allContent =
+    Pages.pages ++ Posts.posts
+
+
 findBySlug : List Content -> String -> Maybe Content
 findBySlug allContent slug =
     allContent

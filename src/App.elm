@@ -5,7 +5,6 @@ import Navigation
 import Types exposing (Model, Msg(..))
 import View
 import Pages
-import Posts
 import ContentUtils
 import FetchContent
 import RemoteData exposing (RemoteData)
@@ -15,7 +14,6 @@ import Title
 initialModel : Model
 initialModel =
     { currentContent = Pages.index
-    , allContent = Pages.pages ++ Posts.posts
     }
 
 
@@ -46,7 +44,7 @@ update msg model =
         UrlChange newUrl ->
             let
                 piece =
-                    ContentUtils.findBySlug model.allContent newUrl
+                    ContentUtils.findBySlug ContentUtils.allContent newUrl
             in
                 case piece of
                     Nothing ->

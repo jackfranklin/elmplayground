@@ -6,8 +6,7 @@ import Html exposing (Html)
 
 
 type alias Model =
-    { allContent : List Content
-    , currentContent : Content
+    { currentContent : Content
     }
 
 
