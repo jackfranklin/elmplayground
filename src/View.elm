@@ -105,4 +105,4 @@ renderMarkdown markdown =
 footer : Model -> Html Msg
 footer model =
     Html.footer [ class "footer" ]
-        [ text "Copyright Elm Playground" ]
+        [ text "" ]
