@@ -45,9 +45,6 @@ update msg model =
 
         UrlChange newUrl ->
             let
-                _ =
-                    Debug.log "urlChange" newUrl
-
                 piece =
                     ContentUtils.findBySlug model.allContent newUrl
             in

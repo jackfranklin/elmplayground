@@ -33,9 +33,22 @@ latestPost =
 
 postsInOrder : List Content
 postsInOrder =
-    List.sortWith contentByDateComparison Posts.posts
+    List.sortWith (flipComparsion contentByDateComparison) Posts.posts
 
 
 contentByDateComparison : Content -> Content -> Order
 contentByDateComparison a b =
     Date.Extra.compare a.publishedDate b.publishedDate
+
+
+flipComparsion : (a -> a -> Order) -> a -> a -> Order
+flipComparsion compareFn a b =
+    case compareFn a b of
+        LT ->
+            GT
+
+        EQ ->
+            EQ
+
+        GT ->
+            LT
