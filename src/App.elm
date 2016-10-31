@@ -42,24 +42,14 @@ update msg model =
             OnUrlChange.update newUrl model
 
 
-view : Model -> Html Msg
-view model =
-    View.render model
-
-
 toUrl : Model -> String
 toUrl model =
     model.currentContent.slug
 
 
-fromUrl : String -> String
-fromUrl url =
-    url
-
-
 urlParser : Navigation.Parser String
 urlParser =
-    Navigation.makeParser (fromUrl << .pathname)
+    Navigation.makeParser .pathname
 
 
 urlUpdate : String -> Model -> ( Model, Cmd Msg )
@@ -71,7 +61,7 @@ main : Program Never
 main =
     Navigation.program urlParser
         { init = init
-        , view = view
+        , view = View.render
         , update = update
         , urlUpdate = urlUpdate
         , subscriptions = always Sub.none
