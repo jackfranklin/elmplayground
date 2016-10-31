@@ -24,7 +24,8 @@ a:hover {
 }
 .site-container {
   font-family: Helvetica, Arial, sans-serif;
-  width: 80%;
+  width: 100%;
+  max-width: 43em;
   margin: 20px auto;
 }
 
