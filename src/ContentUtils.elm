@@ -26,10 +26,14 @@ findPosts =
 
 latestPost : Content
 latestPost =
-    Posts.posts
-        |> List.sortWith contentByDateComparison
+    postsInOrder
         |> List.head
         |> Maybe.withDefault Pages.notFoundContent
+
+
+postsInOrder : List Content
+postsInOrder =
+    List.sortWith contentByDateComparison Posts.posts
 
 
 contentByDateComparison : Content -> Content -> Order

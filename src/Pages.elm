@@ -33,6 +33,19 @@ about =
     }
 
 
+archives : Content
+archives =
+    { slug = "/archives"
+    , contentType = Page
+    , name = "archives"
+    , title = "Archives"
+    , publishedDate = fromCalendarDate 2016 Sep 1
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    , intro = ""
+    }
+
+
 notFoundContent : Content
 notFoundContent =
     { title = "Couldn't find content"
@@ -61,4 +74,4 @@ notFound404 =
 
 pages : List Content
 pages =
-    [ index, about, notFound404 ]
+    [ index, about, archives, notFound404 ]

@@ -18,6 +18,13 @@ indexIntro =
     """
 
 
+archivesIntro : String
+archivesIntro =
+    """
+    Browse through all the posts from the Elm Playground
+    """
+
+
 specialCases : Dict String ViewFn
 specialCases =
     Dict.fromList
@@ -26,6 +33,14 @@ specialCases =
                 (div []
                     [ p [] [ text indexIntro ]
                     , ViewHelpers.renderLatestPost
+                    ]
+                )
+          )
+        , ( "archives"
+          , \model ->
+                (div []
+                    [ p [] [ text archivesIntro ]
+                    , ViewHelpers.renderArchives
                     ]
                 )
           )

@@ -34,6 +34,7 @@ navigation model =
     nav [ class "navigation" ]
         [ li [] [ linkContent "Home" Pages.index ]
         , li [] [ linkContent "About" Pages.about ]
+        , li [] [ linkContent "Archives" Pages.archives ]
         ]
 
 
@@ -53,8 +54,24 @@ mainBody : Model -> Html Msg
 mainBody model =
     div [ class "mainBody" ]
         [ h1 [] [ text model.currentContent.title ]
+        , renderMeta model.currentContent
         , renderContent model
         ]
+
+
+renderMeta : Content -> Html Msg
+renderMeta content =
+    case content.contentType of
+        Types.Page ->
+            div [] []
+
+        Types.Post ->
+            div [ class "content-meta" ]
+                [ p []
+                    [ text
+                        ("Published on " ++ ViewHelpers.formatDate content.publishedDate ++ " by " ++ content.author.name ++ ".")
+                    ]
+                ]
 
 
 convertMarkdownToHtml : WebData String -> Html Msg
