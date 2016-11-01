@@ -2,3 +2,4 @@ elm-stuff/
 build/
 node_modules/
 dist/
+src/GithubToken.elm

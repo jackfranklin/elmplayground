@@ -7,6 +7,7 @@ import Html exposing (Html)
 
 type alias Model =
     { currentContent : Content
+    , contributors : WebData (List GithubContributor)
     }
 
 
@@ -14,6 +15,10 @@ type alias Author =
     { name : String
     , avatar : String
     }
+
+
+type alias GithubContributor =
+    { name : String, profileUrl : String }
 
 
 type ContentType
@@ -38,3 +43,4 @@ type Msg
     | UrlChange String
     | FetchedContent (WebData String)
     | LinkClicked String
+    | FetchedContributors (WebData (List GithubContributor))

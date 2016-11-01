@@ -5,10 +5,10 @@ import Html.Attributes exposing (class, href, src)
 import RemoteData exposing (WebData, RemoteData(..))
 import Markdown
 import Pages
-import Types exposing (Msg(..))
+import Types exposing (Msg(..), GithubContributor)
 import ViewSpecialCases
 import Types exposing (Model, Msg, Content)
-import ViewHelpers exposing (linkContent)
+import ViewHelpers exposing (linkContent, externalLink)
 
 
 render : Model -> Html Msg
@@ -105,4 +105,24 @@ renderMarkdown markdown =
 footer : Model -> Html Msg
 footer model =
     Html.footer [ class "footer" ]
-        [ text "" ]
+        [ renderContributors model.contributors ]
+
+
+getContributorNames : List GithubContributor -> List (Html Msg)
+getContributorNames contributors =
+    contributors
+        |> List.filter (\{ name } -> name /= "jackfranklin")
+        |> List.map (\{ name, profileUrl } -> externalLink name profileUrl)
+
+
+renderContributors : WebData (List GithubContributor) -> Html Msg
+renderContributors contributors =
+    case contributors of
+        RemoteData.Success users ->
+            p []
+                ((text "The Elm Playground is created by Jack Franklin and contributors: ")
+                    :: getContributorNames users
+                )
+
+        _ ->
+            p [] []

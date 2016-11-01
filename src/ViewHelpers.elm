@@ -29,6 +29,11 @@ linkUrl str url =
     a [ href url, navigationOnClick (LinkClicked url) ] [ text str ]
 
 
+externalLink : String -> String -> Html Msg
+externalLink str url =
+    a [ href url ] [ text str ]
+
+
 renderLatestPost : Html Msg
 renderLatestPost =
     div []

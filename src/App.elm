@@ -1,16 +1,18 @@
 module MyApp exposing (..)
 
-import Html exposing (Html, text)
 import Navigation
 import Types exposing (Model, Msg(..))
 import View
 import Pages
 import OnUrlChange
+import GithubApi
+import RemoteData
 
 
 initialModel : Model
 initialModel =
     { currentContent = Pages.index
+    , contributors = RemoteData.NotAsked
     }
 
 
@@ -38,6 +40,9 @@ update msg model =
             in
                 ( { model | currentContent = newCurrent }, Cmd.none )
 
+        FetchedContributors response ->
+            ( { model | contributors = response }, Cmd.none )
+
         UrlChange newUrl ->
             OnUrlChange.update newUrl model
 
@@ -54,7 +59,16 @@ urlParser =
 
 urlUpdate : String -> Model -> ( Model, Cmd Msg )
 urlUpdate result model =
-    update (UrlChange result) model
+    let
+        ( initialModel, initialCmd ) =
+            update (UrlChange result) model
+    in
+        ( initialModel
+        , Cmd.batch
+            [ initialCmd
+            , GithubApi.fetchContributors
+            ]
+        )
 
 
 main : Program Never
