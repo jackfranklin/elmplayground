@@ -17,9 +17,9 @@ getContentForUrl =
 fetchCommand : Content -> Cmd Msg
 fetchCommand newItem =
     if ViewSpecialCases.hasSpecialCase newItem then
-        FetchContent.fetch newItem
-    else
         Cmd.none
+    else
+        FetchContent.fetch newItem
 
 
 update : String -> Model -> ( Model, Cmd Msg )

@@ -54,4 +54,9 @@ getSpecialCase =
 
 hasSpecialCase : Content -> Bool
 hasSpecialCase { name } =
-    getSpecialCase name == Nothing
+    case getSpecialCase name of
+        Just _ ->
+            True
+
+        Nothing ->
+            False
