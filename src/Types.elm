@@ -2,7 +2,6 @@ module Types exposing (..)
 
 import Date exposing (Date)
 import RemoteData exposing (WebData)
-import Html exposing (Html)
 
 
 type alias Model =
@@ -39,8 +38,7 @@ type alias Content =
 
 
 type Msg
-    = NoOp
-    | UrlChange String
+    = UrlChange String
     | FetchedContent (WebData String)
     | LinkClicked String
     | FetchedContributors (WebData (List GithubContributor))

@@ -22,20 +22,20 @@ fetchCommand newItem =
         FetchContent.fetch newItem
 
 
+newItemCommands : Content -> List (Cmd Msg)
+newItemCommands newItem =
+    [ fetchCommand newItem, Title.setTitle newItem ]
+
+
 update : String -> Model -> ( Model, Cmd Msg )
 update newUrl model =
     case getContentForUrl newUrl of
         Nothing ->
-            ( model, Navigation.modifyUrl "/404" )
+            model ! [ Navigation.modifyUrl "/404" ]
 
         Just item ->
             let
                 newItem =
                     { item | markdown = RemoteData.Loading }
             in
-                ( { model | currentContent = newItem }
-                , Cmd.batch
-                    [ fetchCommand newItem
-                    , Title.setTitle newItem
-                    ]
-                )
+                { model | currentContent = newItem } ! newItemCommands newItem

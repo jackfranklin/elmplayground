@@ -24,24 +24,21 @@ init url =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
         LinkClicked slug ->
-            ( model, Navigation.newUrl slug )
+            model ! [ Navigation.newUrl slug ]
 
         FetchedContent response ->
             let
-                content' =
+                currentContent =
                     model.currentContent
 
                 newCurrent =
-                    { content' | markdown = response }
+                    { currentContent | markdown = response }
             in
-                ( { model | currentContent = newCurrent }, Cmd.none )
+                { model | currentContent = newCurrent } ! []
 
         FetchedContributors response ->
-            ( { model | contributors = response }, Cmd.none )
+            { model | contributors = response } ! []
 
         UrlChange newUrl ->
             OnUrlChange.update newUrl model
