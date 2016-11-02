@@ -16,18 +16,17 @@ contributorsUrl =
 requestSettings : Http.Request
 requestSettings =
     let
-        token =
+        headers =
             case GithubToken.token of
                 Just token ->
-                    token
+                    [ ( "Authorization", token )
+                    ]
 
                 Nothing ->
-                    ""
+                    []
     in
         { verb = "GET"
-        , headers =
-            [ ( "Authorization", token )
-            ]
+        , headers = headers
         , url = contributorsUrl
         , body = Http.empty
         }
