@@ -17,16 +17,10 @@ requestSettings : Http.Request
 requestSettings =
     let
         headers =
-            case GithubToken.token of
-                Just token ->
-                    [ ( "Authorization", token )
-                    ]
-
-                Nothing ->
-                    []
+            Maybe.map (\tok -> [ ( "Authorization", tok ) ]) GithubToken.token
     in
         { verb = "GET"
-        , headers = headers
+        , headers = Maybe.withDefault [] headers
         , url = contributorsUrl
         , body = Http.empty
         }
