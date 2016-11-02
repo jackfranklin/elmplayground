@@ -113,6 +113,7 @@ getContributorNames contributors =
     contributors
         |> List.filter (\{ name } -> name /= "jackfranklin")
         |> List.map (\{ name, profileUrl } -> externalLink name profileUrl)
+        |> List.intersperse (span [] [ text ", " ])
 
 
 renderContributors : WebData (List GithubContributor) -> Html Msg
