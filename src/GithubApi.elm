@@ -15,13 +15,22 @@ contributorsUrl =
 
 requestSettings : Http.Request
 requestSettings =
-    { verb = "GET"
-    , headers =
-        [ ( "Authorization", GithubToken.token )
-        ]
-    , url = contributorsUrl
-    , body = Http.empty
-    }
+    let
+        token =
+            case GithubToken.token of
+                Just token ->
+                    token
+
+                Nothing ->
+                    ""
+    in
+        { verb = "GET"
+        , headers =
+            [ ( "Authorization", token )
+            ]
+        , url = contributorsUrl
+        , body = Http.empty
+        }
 
 
 sendContributorsRequest : Task Http.Error (List GithubContributor)

@@ -1,6 +1,8 @@
 module GithubToken exposing (..)
 
+-- Token should look like this: Just "token GITHUB_TOKEN_HERE"
 
-token : String
+
+token : Maybe String
 token =
-    "Get your Github toke from here: https://github.com/settings/tokens"
+    Nothing
