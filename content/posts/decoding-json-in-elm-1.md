@@ -138,3 +138,79 @@ Ok { name = "Jack" }
 
 Which is perfect, and exactly what we want!
 
+## Type aliasing
+
+It's pretty dull to have to repeat the type `{ name : String }` throughout this imaginary example, so I can instead type alias it:
+
+```elm
+type alias User = { name : String }
+```
+
+When you define a type alias in Elm, you not only get the alias but `User` is a constructor function:
+
+```elm
+User : String -> User
+```
+
+This means that I can call:
+
+```elm
+User "jack"
+```
+
+And get back:
+
+```elm
+{ name = "Jack" }
+```
+
+We can use this to our advantage. Recall that our `userDecoder` looks like so:
+
+```elm
+userDecoder : Decode.Decoder { name : String }
+userDecoder =
+    Decode.object1 (\name -> { name = name })
+        (Decode.at [ "name" ] Decode.string)
+```
+
+Firstly, we can change the type annotation:
+
+```elm
+userDecoder : Decode.Decoder User
+userDecoder =
+    Decode.object1 (\name -> { name = name })
+        (Decode.at [ "name" ] Decode.string)
+```
+
+And then we can update the function that creates our `User`:
+
+```elm
+userDecoder : Decode.Decoder User
+userDecoder =
+    Decode.object1 (\name -> User name)
+        (Decode.at [ "name" ] Decode.string)
+```
+
+But whenever you have something of the form:
+
+```elm
+(\name -> User name)
+```
+
+Or, more generically:
+
+```elm
+(\x -> y x)
+```
+
+We can replace that by just passing the function we're calling directly, leaving us with the decoder:
+
+```elm
+userDecoder : Decode.Decoder User
+userDecoder =
+    Decode.object1 User (Decode.at [ "name" ] Decode.string)
+```
+
+This is the most common pattern you'll see when dealing with decoding in Elm. The first argument to an object decoder is nearly always a constructor for a type alias.
+
+
