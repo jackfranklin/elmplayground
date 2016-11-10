@@ -61,7 +61,7 @@ userDecoder : Decode.Decoder { name : String }
 
 Because it's a decoder that returns an Elm record with a `name` property of type `String`.
 
-Now let's run this decoder and see what we get. We can run a decoder using `Decode.decodeString`, which takes a decoder and input. It returns an Elm result, which will be `Ok` if we were successful, or `Err` if we errored. Normally, if you're decoding HTTP responses and so on, you won't ever call this function manually, the library you're using will do it for you. It is really useful for testing decoders though!
+Now let's run this decoder and see what we get. We can run a decoder using `Decode.decodeString`, which takes a decoder and input. It returns an Elm result, which will be `Ok` if we were successful, or `Err` if we had an issue. Normally, if you're decoding HTTP responses and so on, you won't ever call this function manually, the library you're using will do it for you. It is really useful for testing decoders though!
 
 
 
