@@ -219,9 +219,109 @@ Immediately you should notice some important features of this response:
 
 Granted, this example is a little extreme, but it's not that common to see APIs that have data like this. The good news is that if you have a nice, friendly, consistent API, then this blog post will hopefully still help, and you'll have less work!
 
-When dealing with data like this, I like to start with the smallest piece of the puzzle and work up. To that end, we'll start by writing a decoder that's capable of decoding just the `sports` field and the object that it gives us. This is key to approaching decoders - start with the smallest bits, and don't get overwhelmed by trying to do a big object in one go!
+When dealing with data like this, I like to start with the simplest piece of the puzzle and work up to the most complicated. Looking at the data we have, most of the fields are always present, and always of the same type, so let's start with that and ignore the rest of the fields.
 
-## The `sports` key.
+Let's create the `userDecoder` that can decode a user object. We know we have five fields, so we can use `Decode.object5` to do that. The first argument we'll give it is the `User` type, which will be the function that constructs a user for us. We can easily decode the `name`  field, which is always a string:
+
+```elm
+userDecoder =
+    Decode.object5
+        User
+        (Decode.at [ "name" ] Decode.string)
+        -- more fields to come here
+```
+
+And we can do the same for `age`, which is an integer:
+
+```elm
+userDecoder =
+    Decode.object5
+        User
+        (Decode.at [ "name" ] Decode.string)
+        (Decode.at [ "age" ] Decode.int)
+        -- other fields to come, hold tight!
+```
+
+And we can do the same for `languages`. `languages` is a list of strings, and we can decode that by using the `Decode.list` decoder, which takes another decoder which it will use for each individual item. So `Decode.list Decode.string` creates a decoder that can decode a list of strings:
+
+```elm
+userDecoder =
+    Decode.object5
+        User
+        (Decode.at [ "name" ] Decode.string)
+        (Decode.at [ "age" ] Decode.int)
+        -- we'll decode the description field here in a mo
+        (Decode.at [ "languages" ] (Decode.list Decode.string))
+        -- we'll decode the sports object here in a mo
+```
+
+A top tip when you want to test decoders incrementally - you can use `Decode.succeed` to have a decoder pay no attention to the actual JSON and just succeed with the given value. So to finish our decoder we can simply fill in our missing fields with `Decode.succeed`:
+
+```elm
+userDecoder =
+    Decode.object5
+        User
+        (Decode.at [ "name" ] Decode.string)
+        (Decode.at [ "age" ] Decode.int)
+        (Decode.succeed Nothing)
+        (Decode.at [ "languages" ] (Decode.list Decode.string))
+        (Decode.succeed False)
+```
+
+That makes our decoded `description` value always `Nothing` (recall that `description` is a `Maybe`), and our `playsFootball` value always `False`.
+
+## Order of decoders
+
+Something that I failed to realise early on when I was getting used to JSON decoding is why the decoders above are ordered as such. It's because they match the ordering of values in the `User` type alias.
+
+Because the `User` fields are defined in this order:
+
+```elm
+type alias User =
+    { name : String
+    , age : Int
+    , description : Maybe String
+    , languages : List String
+    , playsFootball : Bool
+    }
+```
+
+We have to decode in that order, too.
+
+## Decoding maybe values
+
+If we have a key that is not always present, we can decode that with `Decode.maybe`. This takes another decoder, and if that decoder fails because the key it's looking for isn't present, it will be decoded to `Nothing`. Else, it will be decoded to `Just val`, where `val` is the value that was decoded.
+
+What this means in practice is that to decode a `maybe` you simply write the decoder you would write if the field was always present, in our case:
+
+```elm
+(Decode.at [ "description" ] Decode.string)
+```
+
+And we then wrap it in `Decode.maybe`:
+
+```elm
+(Decode.maybe (Decode.at [ "description" ] Decode.string))
+```
+
+And that's it! We're now nearly done with our decoder:
+
+```elm
+userDecoder : Decode.Decoder User
+userDecoder =
+    Decode.object5
+        User
+        (Decode.at [ "name" ] Decode.string)
+        (Decode.at [ "age" ] Decode.int)
+        (Decode.maybe (Decode.at [ "description" ] Decode.string))
+        (Decode.at [ "languages" ] (Decode.list Decode.string))
+        (Decode.succeed False) -- just this one to go!
+```
+
+
+## `Decode.map`
+
+It's time to get a bit more complex and decode the sports object. Remember that we just want to pull out the `football` field, if it's present, but set it to `False` if it's not present.
 
 The `sports` key will be one of three values:
 
@@ -231,4 +331,52 @@ The `sports` key will be one of three values:
 
 And we use it to set the `playsFootball` boolean to `True` or `False`. In the case where the `football` key isn't set, we want to default it to `False`.
 
-Before dealing with the case where it's missing, let's pretend it's always present, and see how we would decode that.
+Before dealing with the case where it's missing, let's pretend it's always present, and see how we would decode that. We'd create a decoder that pulls out the `football` field, and decodes it as a boolean:
+
+```elm
+Decode.at [ "sports", "football" ] Decode.bool
+```
+
+That would pull out the `football` key in the `sports` object, and decode it as a boolean. However, we need to deal with the `football` key being missing. The first thing I'm going to do is define another decoder, `sportsDecoder`, which will take the `sports` object and decode it:
+
+```elm
+Decode.at [ "sports" ] sportsDecoder
+
+sportsDecoder =
+    Decode.at [ "football" ] Decode.bool
+```
+
+This is equivalent to the previous example but we've now split the code up a little. Remember earlier that we used `Decode.succeed` to make a JSON decoder succeed with a given value? That's what we need to use here. We effectively want to try to decode it first, but if it goes wrong, just return `False`. If we were writing our decoder out in English, we'd say:
+
+1. Try to find the value in the `football` field and decode it as boolean.
+2. If something goes wrong, don't worry about it, just set the value to `False`.
+
+It turns out that Elm gives us `Decode.oneOf`, which does exactly that! `Decode.oneOf` takes a list of decoders and will try each of them in turn. If anything goes wrong it will try the next decoder in the list. Only if none of the decoders work will it fail.
+
+So the first thing we can do is wrap our existing `sportsDecoder` in a `Decode.oneOf` call:
+
+```elm
+sportsDecoder =
+    (Decode.oneOf
+        [ Decode.at [ "football" ] Decode.bool ]
+    )
+```
+
+That will work when the field is present, but now we need to cover the other case and always return `False`:
+
+```elm
+sportsDecoder =
+    (Decode.oneOf
+        [ Decode.at [ "football" ] Decode.bool
+        , Decode.succeed False
+        ]
+    )
+```
+
+With that change, we decode the value if it exists, or we set it to `False`. We're done!
+
+## Conclusion
+
+I hope this article has gone some way to showing that Elm's decoding isn't quite as scary as it first seems. Yes, it's not always immediately intuitive, and takes time to get used to, but once you get the hang of it I think you'll find it really nice to be able to so explicitly deal with JSON and decode it into your application's types.
+
+If you'd like to look at the code, I've [got a small app on Github](https://github.com/jackfranklin/elm-json-decoding) that uses the decoders in this article, and you can [find me on Twitter](http://twitter.com/Jack_Franklin) (or the Elm slack channel!) if you have any questions.
