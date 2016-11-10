@@ -2,64 +2,7 @@ Something that continually trips beginners up in Elm is dealing with JSON respon
 
 Today, in the first post in a series, we'll look at using JSON decoders in Elm to deal with data from an API. I've purposefully made some of the data awkward to show some of the more complex parts of decoding JSON. Hopefully the APIs you're working with are much better than my fake one, but this post should have you covered if not!
 
-## The User Type
-
-Our application is dealing with a `User` type that looks like so:
-
-```elm
-type alias User =
-    { name : String
-    , age : Int
-    , description : Maybe String
-    , languages : List String
-    , playsFootball : Bool
-    }
-```
-
-The only piece of data a user might be missing is `description`, which is why it's modelled as a `Maybe String`.
-
-## The Data
-
-Keeping in mind the above type we've got, here's the API response we're working with:
-
-```javascript
-{
-  "users": [
-    {
-      "name": "Jack",
-      "age": 24,
-      "description": "A person who writes Elm",
-      "languages": ["elm", "javascript"],
-      "sports": {
-        "football": true
-      }
-    },
-    {
-      "name": "Bob",
-      "age": 25,
-      "languages": ["ruby", "scala"],
-      "sports": {}
-    },
-    {
-      "name": "Alice",
-      "age": 23,
-      "description": "Alice sends secrets to Bob",
-      "languages": ["C", "scala", "elm"],
-      "sports": {
-        "football": false
-      }
-    }
-  ]
-}
-```
-
-Immediately you should notice some important features of this response:
-
-- All the data is nested under the `users` key
-- Not every user has a `description` field.
-- Every user has a `sports` object, but it doesn't always have the `football` key.
-
-Granted, this example is a little extreme, but it's not that common to see APIs that have data like this. The good news is that if you have a nice, friendly, consistent API, then this blog post will hopefully still help, and you'll have less work!
+Before we get into that though, let's go through the basics of Elm decoders.
 
 ## What is an Elm JSON decoder?
 
@@ -211,6 +154,81 @@ userDecoder =
     Decode.object1 User (Decode.at [ "name" ] Decode.string)
 ```
 
-This is the most common pattern you'll see when dealing with decoding in Elm. The first argument to an object decoder is nearly always a constructor for a type alias.
+This is the most common pattern you'll see when dealing with decoding in Elm. The first argument to an object decoder is nearly always a constructor for a type alias. Just remember, it's a function that takes all the decoded values and turns them into the thing we want to end up with.
 
+## Back to the problem at hand
 
+Now we're a bit more familiar with decoders, let's look at our API and dealing with the data it gives us.
+
+## The User Type
+
+Our application is dealing with a `User` type that looks like so:
+
+```elm
+type alias User =
+    { name : String
+    , age : Int
+    , description : Maybe String
+    , languages : List String
+    , playsFootball : Bool
+    }
+```
+
+The only piece of data a user might be missing is `description`, which is why it's modelled as a `Maybe String`.
+
+## The Data
+
+Keeping in mind the above type we've got, here's the API response we're working with:
+
+```javascript
+{
+  "users": [
+    {
+      "name": "Jack",
+      "age": 24,
+      "description": "A person who writes Elm",
+      "languages": ["elm", "javascript"],
+      "sports": {
+        "football": true
+      }
+    },
+    {
+      "name": "Bob",
+      "age": 25,
+      "languages": ["ruby", "scala"],
+      "sports": {}
+    },
+    {
+      "name": "Alice",
+      "age": 23,
+      "description": "Alice sends secrets to Bob",
+      "languages": ["C", "scala", "elm"],
+      "sports": {
+        "football": false
+      }
+    }
+  ]
+}
+```
+
+Immediately you should notice some important features of this response:
+
+- All the data is nested under the `users` key
+- Not every user has a `description` field.
+- Every user has a `sports` object, but it doesn't always have the `football` key.
+
+Granted, this example is a little extreme, but it's not that common to see APIs that have data like this. The good news is that if you have a nice, friendly, consistent API, then this blog post will hopefully still help, and you'll have less work!
+
+When dealing with data like this, I like to start with the smallest piece of the puzzle and work up. To that end, we'll start by writing a decoder that's capable of decoding just the `sports` field and the object that it gives us. This is key to approaching decoders - start with the smallest bits, and don't get overwhelmed by trying to do a big object in one go!
+
+## The `sports` key.
+
+The `sports` key will be one of three values:
+
+- `{}`
+- `{ "football": true }`
+- `{ "football": false }`
+
+And we use it to set the `playsFootball` boolean to `True` or `False`. In the case where the `football` key isn't set, we want to default it to `False`.
+
+Before dealing with the case where it's missing, let's pretend it's always present, and see how we would decode that.
