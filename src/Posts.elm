@@ -33,6 +33,19 @@ buildingTheElmPlayground =
     }
 
 
+elmJsonDecodingOne : Content
+elmJsonDecodingOne =
+    { slug = "/decoding-json-in-elm-1"
+    , title = "Decoding JSON in Elm"
+    , name = "decoding-json-in-elm-1"
+    , publishedDate = fromCalendarDate 2016 Nov 8
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    , contentType = Post
+    , intro = "A first post in a series on dealing with JSON in Elm."
+    }
+
+
 posts : List Content
 posts =
-    [ helloWorld, buildingTheElmPlayground ]
+    [ helloWorld, buildingTheElmPlayground, elmJsonDecodingOne ]
