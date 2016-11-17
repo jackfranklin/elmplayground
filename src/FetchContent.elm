@@ -8,6 +8,7 @@ import RemoteData
 fetch : Content -> Cmd Msg
 fetch content =
     Http.getString (urlForContent content)
+        |> Http.toTask
         |> RemoteData.asCmd
         |> Cmd.map FetchedContent
 

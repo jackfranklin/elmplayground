@@ -2,6 +2,7 @@ module Types exposing (..)
 
 import Date exposing (Date)
 import RemoteData exposing (WebData)
+import Navigation
 
 
 type alias Model =
@@ -38,7 +39,7 @@ type alias Content =
 
 
 type Msg
-    = UrlChange String
+    = UrlChange Navigation.Location
     | FetchedContent (WebData String)
     | LinkClicked String
     | FetchedContributors (WebData (List GithubContributor))
