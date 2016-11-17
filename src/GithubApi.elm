@@ -1,10 +1,9 @@
 module GithubApi exposing (fetchContributors)
 
-import Task exposing (Task)
 import Http
 import RemoteData
 import GithubToken
-import Json.Decode as Decode exposing (Decoder, (:=))
+import Json.Decode as Decode exposing (Decoder, field)
 import Types exposing (Msg(..), GithubContributor)
 
 
@@ -13,31 +12,29 @@ contributorsUrl =
     "https://api.github.com/repos/jackfranklin/elmplayground/stats/contributors"
 
 
-requestSettings : Http.Request
-requestSettings =
+githubRequest : Http.Request (List GithubContributor)
+githubRequest =
     let
         headers =
-            Maybe.map (\tok -> [ ( "Authorization", tok ) ]) GithubToken.token
+            Maybe.map (\tok -> [ Http.header "Authorization" tok ]) GithubToken.token
     in
-        { verb = "GET"
-        , headers = Maybe.withDefault [] headers
-        , url = contributorsUrl
-        , body = Http.empty
-        }
-
-
-sendContributorsRequest : Task Http.Error (List GithubContributor)
-sendContributorsRequest =
-    Http.send Http.defaultSettings requestSettings
-        |> Http.fromJson contributorsDecoder
+        Http.request
+            { method = "GET"
+            , headers = Maybe.withDefault [] headers
+            , url = contributorsUrl
+            , body = Http.emptyBody
+            , expect = Http.expectJson contributorsDecoder
+            , timeout = Nothing
+            , withCredentials = False
+            }
 
 
 contributorDecoder : Decoder GithubContributor
 contributorDecoder =
     Decode.at [ "author" ]
-        (Decode.object2 GithubContributor
-            ("login" := Decode.string)
-            ("html_url" := Decode.string)
+        (Decode.map2 GithubContributor
+            (field "login" Decode.string)
+            (field "html_url" Decode.string)
         )
 
 
@@ -48,6 +45,7 @@ contributorsDecoder =
 
 fetchContributors : Cmd Msg
 fetchContributors =
-    sendContributorsRequest
+    githubRequest
+        |> Http.toTask
         |> RemoteData.asCmd
         |> Cmd.map FetchedContributors

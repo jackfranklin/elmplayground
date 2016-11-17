@@ -16,9 +16,18 @@ initialModel =
     }
 
 
-init : String -> ( Model, Cmd Msg )
-init url =
-    urlUpdate url initialModel
+init : Navigation.Location -> ( Model, Cmd Msg )
+init location =
+    let
+        ( modelWithFirstUrl, initialCmd ) =
+            update (UrlChange location) initialModel
+    in
+        ( modelWithFirstUrl
+        , Cmd.batch
+            [ initialCmd
+            , GithubApi.fetchContributors
+            ]
+        )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -40,40 +49,15 @@ update msg model =
         FetchedContributors response ->
             { model | contributors = response } ! []
 
-        UrlChange newUrl ->
-            OnUrlChange.update newUrl model
+        UrlChange location ->
+            OnUrlChange.update location.pathname model
 
 
-toUrl : Model -> String
-toUrl model =
-    model.currentContent.slug
-
-
-urlParser : Navigation.Parser String
-urlParser =
-    Navigation.makeParser .pathname
-
-
-urlUpdate : String -> Model -> ( Model, Cmd Msg )
-urlUpdate result model =
-    let
-        ( initialModel, initialCmd ) =
-            update (UrlChange result) model
-    in
-        ( initialModel
-        , Cmd.batch
-            [ initialCmd
-            , GithubApi.fetchContributors
-            ]
-        )
-
-
-main : Program Never
+main : Program Never Model Msg
 main =
-    Navigation.program urlParser
+    Navigation.program UrlChange
         { init = init
         , view = View.render
         , update = update
-        , urlUpdate = urlUpdate
         , subscriptions = always Sub.none
         }
