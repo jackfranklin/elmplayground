@@ -1,5 +1,7 @@
 Something that continually trips beginners up in Elm is dealing with JSON responses from a third party API. I think this is because it's a completely new concept to those picking up Elm from JavaScript. It certainly took me a long time to get comfortable with Elm.
 
+__Update on 18/11/16: Code updated to Elm 0.18__
+
 Today, in the first post in a series, we'll look at using JSON decoders in Elm to deal with data from an API. I've purposefully made some of the data awkward to show some of the more complex parts of decoding JSON. Hopefully the APIs you're working with are much better than my fake one, but this post should have you covered if not!
 
 Before we get into that though, let's go through the basics of Elm decoders.
@@ -16,13 +18,13 @@ Then I need to tell Elm that the value at the `name` field is a string, so it ca
 
 ## Layering decoders
 
-The real power of Elm's decoders, which is also why they can be pretty complicated to work with, is that you can combine them to make other decoders. This is something Brian Hicks wrote about in his [post on Elm decoders being like Lego](https://www.brianthicks.com/post/2016/10/17/composing-decoders-like-lego/), which I highly recommend reading. For example, Elm ships with a decoder for decoding an object with one field, called `JSON.Decode.object1`. Its type signature is:
+The real power of Elm's decoders, which is also why they can be pretty complicated to work with, is that you can combine them to make other decoders. This is something Brian Hicks wrote about in his [post on Elm decoders being like Lego](https://www.brianthicks.com/post/2016/10/17/composing-decoders-like-lego/), which I highly recommend reading. For example, Elm ships with a decoder for decoding an object with one field, called `JSON.Decode.map`. Its type signature is:
 
 ```elm
-object1: (a -> value) -> Decoder a -> Decoder value
+map: (a -> value) -> Decoder a -> Decoder value
 ```
 
-What's important to remember is that all these decoder functions _return new decoders_. You have to layer the decoders together to match your JSON. In the case of `object1`, its arguments are as follows:
+What's important to remember is that all these decoder functions _return new decoders_. You have to layer the decoders together to match your JSON. In the case of `map`, its arguments are as follows:
 
 - `(a -> value)` a function that will take the decoded value, and should return data of the type `value`, which is the Elm data you want to get out of your JSON.
 - `Decoder a` is a decoder that can decode the given JSON and pull out a value of type `a`, which will be passed into the function given as the first argument.
@@ -39,15 +41,15 @@ Let's say we want to decode this into the following Elm record:
 { name = "Jack" }
 ```
 
-The first step is to create our decoder. We're going to use `object1`, because we want to decode a JSON object where we only care about one field. The JSON we're decoding could have _any number of fields_, but we use `object1` because _we only care about one field_.
+The first step is to create our decoder. We're going to use `map`, because we want to decode a JSON object where we only care about one field. The JSON we're decoding could have _any number of fields_, but we use `map` because _we only care about one field_.
 
-__Note__: through the following code examples I've imported the JSON decoding module as `import Json.Decode as Decode`, so I'll refer to functions as `Decode.object1`, `Decode.string`, and so on.
+__Note__: through the following code examples I've imported the JSON decoding module as `import Json.Decode as Decode`, so I'll refer to functions as `Decode.map`, `Decode.string`, and so on.
 
 First I'll define my decoder. The first argument is an object that takes the decoded value and turns it into the thing I want to end up with. The second is a decoder that can take a value at a particular field, and decode it. To do that I use `Decode.at`, which plucks an item out of the object and applies the given decoder to it:
 
 ```elm
 userDecoder =
-  object1 (\name -> { name = name })
+  map (\name -> { name = name })
     (Decode.at ["name"] Decode.string)
 ```
 
@@ -112,7 +114,7 @@ We can use this to our advantage. Recall that our `userDecoder` looks like so:
 ```elm
 userDecoder : Decode.Decoder { name : String }
 userDecoder =
-    Decode.object1 (\name -> { name = name })
+    Decode.map (\name -> { name = name })
         (Decode.at [ "name" ] Decode.string)
 ```
 
@@ -121,7 +123,7 @@ Firstly, we can change the type annotation:
 ```elm
 userDecoder : Decode.Decoder User
 userDecoder =
-    Decode.object1 (\name -> { name = name })
+    Decode.map (\name -> { name = name })
         (Decode.at [ "name" ] Decode.string)
 ```
 
@@ -130,7 +132,7 @@ And then we can update the function that creates our `User`:
 ```elm
 userDecoder : Decode.Decoder User
 userDecoder =
-    Decode.object1 (\name -> User name)
+    Decode.map (\name -> User name)
         (Decode.at [ "name" ] Decode.string)
 ```
 
@@ -151,7 +153,7 @@ We can replace that by just passing the function we're calling directly, leaving
 ```elm
 userDecoder : Decode.Decoder User
 userDecoder =
-    Decode.object1 User (Decode.at [ "name" ] Decode.string)
+    Decode.map User (Decode.at [ "name" ] Decode.string)
 ```
 
 This is the most common pattern you'll see when dealing with decoding in Elm. The first argument to an object decoder is nearly always a constructor for a type alias. Just remember, it's a function that takes all the decoded values and turns them into the thing we want to end up with.
@@ -221,11 +223,11 @@ Granted, this example is a little extreme, but it's not that common to see APIs 
 
 When dealing with data like this, I like to start with the simplest piece of the puzzle and work up to the most complicated. Looking at the data we have, most of the fields are always present, and always of the same type, so let's start with that and ignore the rest of the fields.
 
-Let's create the `userDecoder` that can decode a user object. We know we have five fields, so we can use `Decode.object5` to do that. The first argument we'll give it is the `User` type, which will be the function that constructs a user for us. We can easily decode the `name`  field, which is always a string:
+Let's create the `userDecoder` that can decode a user object. We know we have five fields, so we can use `Decode.map5` to do that. The first argument we'll give it is the `User` type, which will be the function that constructs a user for us. We can easily decode the `name`  field, which is always a string:
 
 ```elm
 userDecoder =
-    Decode.object5
+    Decode.map5
         User
         (Decode.at [ "name" ] Decode.string)
         -- more fields to come here
@@ -235,7 +237,7 @@ And we can do the same for `age`, which is an integer:
 
 ```elm
 userDecoder =
-    Decode.object5
+    Decode.map5
         User
         (Decode.at [ "name" ] Decode.string)
         (Decode.at [ "age" ] Decode.int)
@@ -246,7 +248,7 @@ And we can do the same for `languages`. `languages` is a list of strings, and we
 
 ```elm
 userDecoder =
-    Decode.object5
+    Decode.map5
         User
         (Decode.at [ "name" ] Decode.string)
         (Decode.at [ "age" ] Decode.int)
@@ -259,7 +261,7 @@ A top tip when you want to test decoders incrementally - you can use `Decode.suc
 
 ```elm
 userDecoder =
-    Decode.object5
+    Decode.map5
         User
         (Decode.at [ "name" ] Decode.string)
         (Decode.at [ "age" ] Decode.int)
@@ -309,7 +311,7 @@ And that's it! We're now nearly done with our decoder:
 ```elm
 userDecoder : Decode.Decoder User
 userDecoder =
-    Decode.object5
+    Decode.map5
         User
         (Decode.at [ "name" ] Decode.string)
         (Decode.at [ "age" ] Decode.int)
