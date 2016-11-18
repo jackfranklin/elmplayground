@@ -27,7 +27,7 @@ The `Model` contains the current piece of content, which is the index page by de
 
 ## Urls
 
-For routing I was able to avoid any of the heavier routing packages and use the [Elm  Navigation][navigation] package to update the URL and manage rendering the right content for the given URL. Every time the URL changes a `UrlChange` message is sent. This looks to find the matching piece of content for the given URL (or "slug"), and then sendds off commands to fetch that content:
+For routing I was able to avoid any of the heavier routing packages and use the [Elm  Navigation][navigation] package to update the URL and manage rendering the right content for the given URL. Every time the URL changes a `UrlChange` message is sent. This looks to find the matching piece of content for the given URL (or "slug"), and then sends off commands to fetch that content:
 
 ```elm
 UrlChange newUrl ->
