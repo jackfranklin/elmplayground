@@ -68,6 +68,10 @@ a:focus {
   line-height: 1.625; /* 24px */
 }
 
+.mainBody img {
+  max-width: 100%;
+}
+
 pre {
   font-size: 1.1725em; /* 17px */
 }
