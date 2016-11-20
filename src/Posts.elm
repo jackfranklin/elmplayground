@@ -1,4 +1,4 @@
-module Posts exposing (posts)
+module Posts exposing (posts, watchMeElmPosts)
 
 import Types exposing (Content, ContentType(..))
 import Authors
@@ -66,3 +66,8 @@ posts =
     , elmJsonDecodingOne
     , shoppingOne
     ]
+
+
+watchMeElmPosts : List Content
+watchMeElmPosts =
+    [ shoppingOne ]

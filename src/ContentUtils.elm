@@ -41,6 +41,11 @@ postsInOrder =
     List.sortWith (flipComparsion contentByDateComparison) Posts.posts
 
 
+watchMeElmPosts : List Content
+watchMeElmPosts =
+    List.sortWith (flipComparsion contentByDateComparison) Posts.watchMeElmPosts
+
+
 contentByDateComparison : Content -> Content -> Order
 contentByDateComparison a b =
     Date.Extra.compare a.publishedDate b.publishedDate

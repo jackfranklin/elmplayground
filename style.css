@@ -48,6 +48,12 @@ a:focus {
   display: inline-block;
   margin-right: 10px;
   font-size: 1.0625em; /* 17px */
+  border-right: 1px solid #ddd;
+  padding-right: 10px;
+}
+
+.navigation li:last-of-type {
+  border-right: none;
 }
 
 .navigation a:link,

@@ -46,6 +46,19 @@ archives =
     }
 
 
+watchMeElm : Content
+watchMeElm =
+    { slug = "/watch-me-elm"
+    , contentType = Page
+    , name = "watch-me-elm"
+    , title = "Watch Me Elm video series"
+    , publishedDate = fromCalendarDate 2016 Sep 1
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    , intro = ""
+    }
+
+
 notFoundContent : Content
 notFoundContent =
     { title = "Couldn't find content"
@@ -74,4 +87,9 @@ notFound404 =
 
 pages : List Content
 pages =
-    [ index, about, archives, notFound404 ]
+    [ index
+    , about
+    , archives
+    , watchMeElm
+    , notFound404
+    ]
