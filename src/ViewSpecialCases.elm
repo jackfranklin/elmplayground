@@ -25,6 +25,13 @@ archivesIntro =
     """
 
 
+watchMeElmIntro : String
+watchMeElmIntro =
+    """
+    All videos in the "Watch me Elm" series are linked to below.
+    """
+
+
 specialCases : Dict String ViewFn
 specialCases =
     Dict.fromList
@@ -41,6 +48,14 @@ specialCases =
                 (div []
                     [ p [] [ text archivesIntro ]
                     , ViewHelpers.renderArchives
+                    ]
+                )
+          )
+        , ( "watch-me-elm"
+          , \model ->
+                (div []
+                    [ p [] [ text watchMeElmIntro ]
+                    , ViewHelpers.renderWatchMeElm
                     ]
                 )
           )

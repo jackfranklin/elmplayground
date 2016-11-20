@@ -68,3 +68,11 @@ renderArchives =
         , ul []
             (List.map renderArchive ContentUtils.postsInOrder)
         ]
+
+
+renderWatchMeElm : Html Msg
+renderWatchMeElm =
+    div []
+        [ ul []
+            (List.map renderArchive ContentUtils.watchMeElmPosts)
+        ]

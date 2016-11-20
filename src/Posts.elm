@@ -1,4 +1,4 @@
-module Posts exposing (posts)
+module Posts exposing (posts, watchMeElmPosts)
 
 import Types exposing (Content, ContentType(..))
 import Authors
@@ -46,6 +46,28 @@ elmJsonDecodingOne =
     }
 
 
+shoppingOne : Content
+shoppingOne =
+    { slug = "/elm-screencast-shopping-1"
+    , title = "Building a Shopping List in Elm: Episode 1"
+    , name = "elm-screencast-shopping-1"
+    , publishedDate = fromCalendarDate 2016 Nov 21
+    , author = Authors.jack
+    , markdown = RemoteData.NotAsked
+    , contentType = Post
+    , intro = "The first in a video series where I build an Elm app"
+    }
+
+
 posts : List Content
 posts =
-    [ helloWorld, buildingTheElmPlayground, elmJsonDecodingOne ]
+    [ helloWorld
+    , buildingTheElmPlayground
+    , elmJsonDecodingOne
+    , shoppingOne
+    ]
+
+
+watchMeElmPosts : List Content
+watchMeElmPosts =
+    [ shoppingOne ]

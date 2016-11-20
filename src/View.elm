@@ -34,6 +34,7 @@ navigation model =
     nav [ class "navigation" ]
         [ li [] [ linkContent "Home" Pages.index ]
         , li [] [ linkContent "About" Pages.about ]
+        , li [] [ linkContent "Watch me Elm Series" Pages.watchMeElm ]
         , li [] [ linkContent "Archives" Pages.archives ]
         ]
 
