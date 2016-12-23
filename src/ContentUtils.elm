@@ -5,6 +5,7 @@ import List
 import Pages
 import Date.Extra
 import Posts
+import String exposing (..)
 
 
 allContent : List Content
@@ -22,6 +23,19 @@ findBySlug allContent slug =
 filterByContentType : ContentType -> List Content -> List Content
 filterByContentType contentType content =
     List.filter (\c -> c.contentType == contentType) content
+
+
+filterByTitle : String -> List Content
+filterByTitle title =
+    let
+        filterdList =
+            List.filter (\c -> contains (toLower title) (toLower c.title))
+                Posts.posts
+    in
+        if (List.isEmpty filterdList) then
+            postsInOrder
+        else
+            filterdList
 
 
 findPosts : List Content -> List Content

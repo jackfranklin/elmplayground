@@ -1,7 +1,9 @@
 module ViewSpecialCases exposing (..)
 
-import Types exposing (Model, Msg, Content)
+import Types exposing (..)
 import Html exposing (..)
+import Html.Attributes exposing (class, href)
+import Html.Events
 import Dict exposing (Dict)
 import ViewHelpers
 
@@ -46,8 +48,14 @@ specialCases =
         , ( "archives"
           , \model ->
                 (div []
-                    [ p [] [ text archivesIntro ]
-                    , ViewHelpers.renderArchives
+                    [ span [] [ text archivesIntro ]
+                    , input
+                        [ Html.Events.onInput UpdateField
+                        , Html.Attributes.placeholder "Search"
+                        , Html.Attributes.class "searchInput"
+                        ]
+                        []
+                    , ViewHelpers.renderArchives model
                     ]
                 )
           )

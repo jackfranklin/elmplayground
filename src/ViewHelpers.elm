@@ -61,12 +61,12 @@ renderArchive content =
         ]
 
 
-renderArchives : Html Msg
-renderArchives =
+renderArchives : Model -> Html Msg
+renderArchives model =
     div []
         [ h4 [] [ text "All posts on Elm Playground" ]
         , ul []
-            (List.map renderArchive ContentUtils.postsInOrder)
+            (List.map renderArchive (ContentUtils.filterByTitle model.searchPost))
         ]
 
 

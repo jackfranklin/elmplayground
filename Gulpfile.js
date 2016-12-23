@@ -12,7 +12,10 @@ gulp.task('build', function() {
     .pipe($.plumber({
       errorHandler: $.notify.onError({ sound: false, message: 'Elm error' })
     }))
-    .pipe($.elm.bundle('App.js', { warn: true }))
+    .pipe($.elm.bundle('App.js', {
+      warn: true,
+      debug: true
+    }))
     .pipe(gulp.dest('build/'));
 });
 
