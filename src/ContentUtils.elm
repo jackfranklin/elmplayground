@@ -5,7 +5,7 @@ import List
 import Pages
 import Date.Extra
 import Posts
-import String exposing (..)
+import String exposing (contains, toLower)
 
 
 allContent : List Content
@@ -25,17 +25,15 @@ filterByContentType contentType content =
     List.filter (\c -> c.contentType == contentType) content
 
 
-filterByTitle : String -> List Content
+filterByTitle : Maybe String -> List Content
 filterByTitle title =
-    let
-        filterdList =
+    case title of
+        Just title ->
             List.filter (\c -> contains (toLower title) (toLower c.title))
                 Posts.posts
-    in
-        if (List.isEmpty filterdList) then
+
+        Nothing ->
             postsInOrder
-        else
-            filterdList
 
 
 findPosts : List Content -> List Content
