@@ -89,5 +89,9 @@ p > code {
 
 .searchInput {
   padding: 3px;
-  float: right;
+  display: block;
+  margin: 10px 0;
+  width: 60%;
+  font-size: 16px;
+
 }
