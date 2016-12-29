@@ -50,12 +50,12 @@ latestPost =
 
 postsInOrder : List Content
 postsInOrder =
-    List.sortWith (flipComparsion contentByDateComparison) Posts.posts
+    List.sortWith (flipComparison contentByDateComparison) Posts.posts
 
 
 watchMeElmPosts : List Content
 watchMeElmPosts =
-    List.sortWith (flipComparsion contentByDateComparison) Posts.watchMeElmPosts
+    List.sortWith (flipComparison contentByDateComparison) Posts.watchMeElmPosts
 
 
 contentByDateComparison : Content -> Content -> Order
@@ -63,8 +63,8 @@ contentByDateComparison a b =
     Date.Extra.compare a.publishedDate b.publishedDate
 
 
-flipComparsion : (a -> a -> Order) -> a -> a -> Order
-flipComparsion compareFn a b =
+flipComparison : (a -> a -> Order) -> a -> a -> Order
+flipComparison compareFn a b =
     case compareFn a b of
         LT ->
             GT
