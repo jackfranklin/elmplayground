@@ -13,6 +13,7 @@ initialModel : Model
 initialModel =
     { currentContent = Pages.index
     , contributors = RemoteData.NotAsked
+    , searchPost = Nothing
     }
 
 
@@ -51,6 +52,9 @@ update msg model =
 
         UrlChange location ->
             OnUrlChange.update location.pathname model
+
+        UpdateSearchPost title ->
+            { model | searchPost = Just title } ! []
 
 
 main : Program Never Model Msg

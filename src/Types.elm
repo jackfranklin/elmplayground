@@ -8,6 +8,7 @@ import Navigation
 type alias Model =
     { currentContent : Content
     , contributors : WebData (List GithubContributor)
+    , searchPost : Maybe String
     }
 
 
@@ -43,3 +44,4 @@ type Msg
     | FetchedContent (WebData String)
     | LinkClicked String
     | FetchedContributors (WebData (List GithubContributor))
+    | UpdateSearchPost String

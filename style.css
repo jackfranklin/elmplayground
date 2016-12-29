@@ -86,3 +86,8 @@ p > code {
   background: #eee;
   font-size: 1.1625em; /* 17px */
 }
+
+.searchInput {
+  padding: 3px;
+  float: right;
+}
