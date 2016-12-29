@@ -5,7 +5,7 @@ import List
 import Pages
 import Date.Extra
 import Posts
-import String exposing (contains, toLower)
+import String
 
 
 allContent : List Content
@@ -29,7 +29,7 @@ filterByTitle : Maybe String -> List Content
 filterByTitle title =
     case title of
         Just title ->
-            List.filter (\c -> contains (toLower title) (toLower c.title))
+            List.filter (\c -> String.contains (String.toLower title) (String.toLower c.title))
                 Posts.posts
 
         Nothing ->
