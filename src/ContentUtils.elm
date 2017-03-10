@@ -64,13 +64,5 @@ contentByDateComparison a b =
 
 
 flipComparison : (a -> a -> Order) -> a -> a -> Order
-flipComparison compareFn a b =
-    case compareFn a b of
-        LT ->
-            GT
-
-        EQ ->
-            EQ
-
-        GT ->
-            LT
+flipComparison =
+    flip
