@@ -3,13 +3,19 @@
   "private": true,
   "version": "0.1.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "build": "webpack -p",
+    "start": "webpack-dev-server"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
+    "copy-webpack-plugin": "^4.0.1",
     "del": "2.2.2",
+    "elm": "^0.18.0",
+    "elm-webpack-loader": "^4.2.0",
     "gulp": "3.9.1",
     "gulp-bump": "2.4.0",
     "gulp-elm": "0.6.1",
@@ -24,6 +30,7 @@
     "gulp-uglify": "2.0.0",
     "gulp-util": "3.0.7",
     "gulp-watch": "4.3.6",
-    "live-server": "github:jackfranklin/live-server#ignore-assets-with-spa-option"
+    "live-server": "github:jackfranklin/live-server#ignore-assets-with-spa-option",
+    "webpack": "^2.2.1"
   }
 }
