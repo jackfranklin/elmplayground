@@ -69,38 +69,27 @@ all =
             -- I have the feeling that I've been testing the filter function, and I shouldn't
             [ test "Empty content" <|
                 \() ->
-                    Expect.equal 0 <| List.length <| filterByContentType Page []
+                    Expect.equal 0 <| List.length <| filterByContentType [] Page
             , test "No content of that ContentType" <|
                 \() ->
                     let
                         content =
                             [ { mockContent | contentType = Post }, { mockContent | contentType = Post } ]
                     in
-                        Expect.equal 0 <| List.length <| filterByContentType Page content
+                        Expect.equal 0 <| List.length <| filterByContentType content Page
             , test "Just one content of that ContentType" <|
                 \() ->
                     let
                         content =
                             [ { mockContent | contentType = Page }, { mockContent | contentType = Post }, { mockContent | contentType = Post } ]
                     in
-                        Expect.equal 1 <| List.length <| filterByContentType Page content
+                        Expect.equal 1 <| List.length <| filterByContentType content Page
             , test "Two content of that ContentType" <|
                 \() ->
                     let
                         content =
                             [ { mockContent | contentType = Page }, { mockContent | contentType = Post }, { mockContent | contentType = Post } ]
                     in
-                        Expect.equal 2 <| List.length <| filterByContentType Post content
-            ]
-        , describe "flipComparison" <|
-            [ test "flipComparison of compare 1 2 should be GT" <|
-                \() ->
-                    Expect.equal GT <| flipComparison compare 1 2
-            , test "flipComparison of compare 2 1 should be LT" <|
-                \() ->
-                    Expect.equal LT <| flipComparison compare 2 1
-            , test "flipComparison of compare 1 1 should be EQ" <|
-                \() ->
-                    Expect.equal EQ <| flipComparison compare 1 1
+                        Expect.equal 2 <| List.length <| filterByContentType content Post
             ]
         ]
