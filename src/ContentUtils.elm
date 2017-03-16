@@ -14,63 +14,43 @@ allContent =
 
 
 findBySlug : List Content -> String -> Maybe Content
-findBySlug allContent slug =
-    allContent
+findBySlug contentList slug =
+    contentList
         |> List.filter (\piece -> piece.slug == slug)
         |> List.head
 
 
-filterByContentType : ContentType -> List Content -> List Content
-filterByContentType contentType content =
-    List.filter (\c -> c.contentType == contentType) content
+filterByContentType : List Content -> ContentType -> List Content
+filterByContentType contentList contentType =
+    List.filter (\c -> c.contentType == contentType) contentList
 
 
-filterByTitle : Maybe String -> List Content
-filterByTitle title =
+filterByTitle : List Content -> Maybe String -> List Content
+filterByTitle contentList title =
     case title of
         Just title ->
             List.filter (\c -> String.contains (String.toLower title) (String.toLower c.title))
-                Posts.posts
+                contentList
 
         Nothing ->
-            postsInOrder
+            sortByDate contentList
 
 
 findPosts : List Content -> List Content
-findPosts =
-    filterByContentType Post
+findPosts contentList =
+    filterByContentType contentList Post
 
 
-latestPost : Content
-latestPost =
-    postsInOrder
-        |> List.head
-        |> Maybe.withDefault Pages.notFoundContent
+latest : List Content -> Content
+latest =
+    sortByDate >> List.head >> Maybe.withDefault Pages.notFoundContent
 
 
-postsInOrder : List Content
-postsInOrder =
-    List.sortWith (flipComparison contentByDateComparison) Posts.posts
-
-
-watchMeElmPosts : List Content
-watchMeElmPosts =
-    List.sortWith (flipComparison contentByDateComparison) Posts.watchMeElmPosts
+sortByDate : List Content -> List Content
+sortByDate =
+    List.sortWith (flip contentByDateComparison)
 
 
 contentByDateComparison : Content -> Content -> Order
 contentByDateComparison a b =
     Date.Extra.compare a.publishedDate b.publishedDate
-
-
-flipComparison : (a -> a -> Order) -> a -> a -> Order
-flipComparison compareFn a b =
-    case compareFn a b of
-        LT ->
-            GT
-
-        EQ ->
-            EQ
-
-        GT ->
-            LT
