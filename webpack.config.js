@@ -3,9 +3,11 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: './src/App.elm',
+  entry: [
+    './src/App.elm',
+    './src/js/app.js',
+  ],
   output: {
-    library: 'Elm',
     path: path.join(__dirname, 'build'),
     filename: 'js/App.js',
   },
@@ -21,6 +23,9 @@ module.exports = {
     }],
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      hljs: path.join(__dirname, './vendor/highlight.pack.js'),
+    }),
     new CopyWebpackPlugin([
       {
         from: 'style.css',
@@ -29,17 +34,14 @@ module.exports = {
         from: 'img/*',
       },
       {
-        from: 'js/*',
-      },
-      {
-        from: 'vendor/**/*',
+        from: 'vendor/**/*.css',
       },
       {
         from: 'content/**/*',
       },
       {
         from: 'index.html',
-      }
-    ])
+      },
+    ]),
   ],
 };
