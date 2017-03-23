@@ -4,13 +4,22 @@ A blog about Elm that's written in Elm.
 
 ## Running locally
 
+Add your Github token to src/GithubToken.elm file (https://github.com/settings/tokens)
+
 ```
 npm install
 elm package install
-(in one tab) gulp start
-(in aother) gulp serve
-add your Github token to src/GithubToken.elm file (https://github.com/settings/tokens)
-open http://localhost:8080
+npm start
 ```
+
+Open `http://localhost:8081`
+
+## Build bundle
+
+```
+npm run build
+```
+
+## Contributing
 
 Contributions welcome!
