@@ -1,3 +1,4 @@
+require('dotenv').config();
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
@@ -23,6 +24,9 @@ module.exports = {
     }],
   },
   plugins: [
+    new webpack.EnvironmentPlugin({
+      'GITHUB_TOKEN': ''
+    }),
     new webpack.ProvidePlugin({
       hljs: path.join(__dirname, './vendor/highlight.pack.js'),
     }),
