@@ -6,6 +6,7 @@ import Types exposing (ContentType(..))
 import ContentUtils exposing (..)
 import Date
 import RemoteData exposing (..)
+import Pages
 
 
 mockString : String
@@ -69,38 +70,119 @@ all =
             -- I have the feeling that I've been testing the filter function, and I shouldn't
             [ test "Empty content" <|
                 \() ->
-                    Expect.equal 0 <| List.length <| filterByContentType Page []
+                    Expect.equal 0 <| List.length <| filterByContentType [] Page
             , test "No content of that ContentType" <|
                 \() ->
                     let
                         content =
                             [ { mockContent | contentType = Post }, { mockContent | contentType = Post } ]
                     in
-                        Expect.equal 0 <| List.length <| filterByContentType Page content
+                        Expect.equal 0 <| List.length <| filterByContentType content Page
             , test "Just one content of that ContentType" <|
                 \() ->
                     let
                         content =
                             [ { mockContent | contentType = Page }, { mockContent | contentType = Post }, { mockContent | contentType = Post } ]
                     in
-                        Expect.equal 1 <| List.length <| filterByContentType Page content
+                        Expect.equal 1 <| List.length <| filterByContentType content Page
             , test "Two content of that ContentType" <|
                 \() ->
                     let
                         content =
                             [ { mockContent | contentType = Page }, { mockContent | contentType = Post }, { mockContent | contentType = Post } ]
                     in
-                        Expect.equal 2 <| List.length <| filterByContentType Post content
+                        Expect.equal 2 <| List.length <| filterByContentType content Post
             ]
-        , describe "flipComparison" <|
-            [ test "flipComparison of compare 1 2 should be GT" <|
+        , describe "filterByTitle" <|
+            [ test "Filter with Nothing" <|
                 \() ->
-                    Expect.equal GT <| flipComparison compare 1 2
-            , test "flipComparison of compare 2 1 should be LT" <|
+                    let
+                        content =
+                            [ { mockContent | publishedDate = Date.fromTime 4 }
+                            , { mockContent | publishedDate = Date.fromTime 1 }
+                            , { mockContent | publishedDate = Date.fromTime 0 }
+                            , { mockContent | publishedDate = Date.fromTime 3 }
+                            , { mockContent | publishedDate = Date.fromTime 2 }
+                            ]
+                    in
+                        Expect.equal (sortByDate content) (filterByTitle content Nothing)
+            , test "Filter with an empty string" <|
                 \() ->
-                    Expect.equal LT <| flipComparison compare 2 1
-            , test "flipComparison of compare 1 1 should be EQ" <|
+                    let
+                        content =
+                            [ { mockContent | title = "Gabriel is learning Elm" }
+                            , { mockContent | title = "Just a title" }
+                            , { mockContent | title = "Learning Elm (Part1)" }
+                            , { mockContent | title = "Learning Elm (Part2)" }
+                            , { mockContent | title = "It will be easy if you already know Haskell" }
+                            ]
+                    in
+                        Expect.equal content (filterByTitle content (Just ""))
+            , test "Filter with some title" <|
                 \() ->
-                    Expect.equal EQ <| flipComparison compare 1 1
+                    let
+                        content =
+                            [ { mockContent | title = "Gabriel is learning Elm" }
+                            , { mockContent | title = "Just a title" }
+                            , { mockContent | title = "Learning Elm (Part1)" }
+                            , { mockContent | title = "Learning Elm (Part2)" }
+                            , { mockContent | title = "It will be easy if you already know Haskell" }
+                            ]
+
+                        expected =
+                            [ { mockContent | title = "Gabriel is learning Elm" }
+                            , { mockContent | title = "Learning Elm (Part1)" }
+                            , { mockContent | title = "Learning Elm (Part2)" }
+                            ]
+                    in
+                        Expect.equal expected (filterByTitle content (Just "Elm"))
+            ]
+        , describe "latest" <|
+            [ test "latest of an empty content" <|
+                \() ->
+                    Expect.equal Pages.notFoundContent (latest [])
+            , test "latest of one element content" <|
+                \() ->
+                    let
+                        content =
+                            [ mockContent ]
+                    in
+                        Expect.equal mockContent (latest content)
+            , test "latest of two element content" <|
+                \() ->
+                    let
+                        first =
+                            { mockContent | title = "first", publishedDate = Date.fromTime 0 }
+
+                        second =
+                            { mockContent | title = "second", publishedDate = Date.fromTime 50 }
+
+                        third =
+                            { mockContent | title = "second", publishedDate = Date.fromTime 100 }
+
+                        content =
+                            [ first, third, second ]
+                    in
+                        Expect.equal third (latest content)
+            ]
+        , describe "sortByDate" <|
+            [ test "sort empty content" <|
+                \() ->
+                    Expect.equal [] (sortByDate [])
+            , test "sort content with different publication dates" <|
+                \() ->
+                    let
+                        content =
+                            [ { mockContent | publishedDate = Date.fromTime 4 }
+                            , { mockContent | publishedDate = Date.fromTime 1 }
+                            , { mockContent | publishedDate = Date.fromTime 0 }
+                            , { mockContent | publishedDate = Date.fromTime 3 }
+                            , { mockContent | publishedDate = Date.fromTime 2 }
+                            ]
+
+                        expected =
+                            List.map Date.fromTime [ 4, 3, 2, 1, 0 ]
+                    in
+                        Expect.equal expected (List.map .publishedDate (sortByDate content))
             ]
         ]
