@@ -1,7 +1,7 @@
 module MyApp exposing (..)
 
 import Navigation
-import Types exposing (Model, Msg(..))
+import Types exposing (Flags, Model, Msg(..))
 import View
 import Pages
 import OnUrlChange
@@ -17,16 +17,19 @@ initialModel =
     }
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
     let
+        { github_token } =
+            flags
+
         ( modelWithFirstUrl, initialCmd ) =
             update (UrlChange location) initialModel
     in
         ( modelWithFirstUrl
         , Cmd.batch
             [ initialCmd
-            , GithubApi.fetchContributors
+            , GithubApi.fetchContributors github_token
             ]
         )
 
@@ -57,9 +60,9 @@ update msg model =
             { model | searchPost = Just title } ! []
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , view = View.render
         , update = update
