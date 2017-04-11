@@ -5,6 +5,11 @@ import RemoteData exposing (WebData)
 import Navigation
 
 
+type alias Flags =
+    { github_token : String
+    }
+
+
 type alias Model =
     { currentContent : Content
     , contributors : WebData (List GithubContributor)

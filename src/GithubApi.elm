@@ -2,7 +2,6 @@ module GithubApi exposing (fetchContributors)
 
 import Http
 import RemoteData
-import GithubToken
 import Json.Decode as Decode exposing (Decoder, field)
 import Types exposing (Msg(..), GithubContributor)
 
@@ -12,15 +11,15 @@ contributorsUrl =
     "https://api.github.com/repos/jackfranklin/elmplayground/stats/contributors"
 
 
-githubRequest : Http.Request (List GithubContributor)
-githubRequest =
+githubRequest : String -> Http.Request (List GithubContributor)
+githubRequest token =
     let
         headers =
-            Maybe.map (\tok -> [ Http.header "Authorization" tok ]) GithubToken.token
+            [ Http.header "Authorization" token ]
     in
         Http.request
             { method = "GET"
-            , headers = Maybe.withDefault [] headers
+            , headers = headers
             , url = contributorsUrl
             , body = Http.emptyBody
             , expect = Http.expectJson contributorsDecoder
@@ -43,9 +42,9 @@ contributorsDecoder =
     Decode.list contributorDecoder
 
 
-fetchContributors : Cmd Msg
-fetchContributors =
-    githubRequest
+fetchContributors : String -> Cmd Msg
+fetchContributors token =
+    githubRequest token
         |> Http.toTask
         |> RemoteData.asCmd
         |> Cmd.map FetchedContributors
